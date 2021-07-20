@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuntravel.dao.SightsMapper">
+    <resultMap id="BaseResultMap" type="com.yuntravel.po.Sights">
+        <id column="sightsId" jdbcType="INTEGER" property="sightsId" />
+        <result column="sightsName" jdbcType="VARCHAR" property="sightsName" />
+        <result column="sightDetail" jdbcType="VARCHAR" property="sightDetail" />
+        <result column="author" jdbcType="VARCHAR" property="author" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="cityLocation" jdbcType="VARCHAR" property="cityLocation" />
+        <result column="headerImg" jdbcType="VARCHAR" property="headerImg" />
+        <result column="aboutVideo" jdbcType="VARCHAR" property="aboutVideo" />
+        <result column="article" jdbcType="VARCHAR" property="article" />
+        <result column="grade" jdbcType="FLOAT" property="grade" />
+        <result column="viewsNum" jdbcType="INTEGER" property="viewsNum" />
+        <result column="createDate" jdbcType="TIMESTAMP" property="createDate" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    sightsId, sightsName, sightDetail, author, city,cityLocation,headerImg,aboutVideo,article,grade,createDate,viewsNum
+  </sql>
+    <select id="qryAllSights" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sights order by grade desc
+    </select>
+
+    <select id="qryAllSightsWithKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sights
+        <where>
+            <if test="city!=null and city!=''">city=#{city,jdbcType=VARCHAR}</if>
+            <if test="sightsName!=null and sightsName!=''">and sightsName=#{sightsName,jdbcType=VARCHAR}</if>
+        </where>
+        order by grade desc
+    </select>
+
+    <select id="qryAllSightsByCity" resultMap="BaseResultMap">
+        select
+        sightsId, sightsName, sightDetail, author, city,cityLocation,headerImg,aboutVideo,article,grade,createDate,viewsNum
+        from sights s JOIN cities c on s.city=c.cityId
+        <where>
+            <if test="key!=null and key!=''">c.cityName like "%"#{key,jdbcType=VARCHAR}"%" or s.sightsName like "%"#{key,jdbcType=VARCHAR}"%"</if>
+        </where>
+        order by grade desc
+    </select>
+
+    <select id="qrySightsById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sights where sightsId=#{sightsId,jdbcType=INTEGER}
+    </select>
+
+
+    <update id="updateSights" parameterType="com.yuntravel.po.Sights">
+        update sights
+        <set>
+            <if test="sightsName != null and sightsName !=''">
+                sightsName = #{sightsName,jdbcType=VARCHAR},
+            </if>
+            <if test="sightDetail != null and sightDetail !=''">
+                sightDetail = #{sightDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null and city !=''">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="headerImg != null and headerImg !=''">
+                headerImg = #{headerImg,jdbcType=VARCHAR},
+            </if>
+            <if test="aboutVideo != null and aboutVideo !=''">
+                aboutVideo = #{aboutVideo,jdbcType=VARCHAR},
+            </if>
+            <if test="article != null and article !=''">
+                article = #{article,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null and grade !=''">
+                grade = #{grade,jdbcType=FLOAT},
+            </if>
+
+        </set>
+        where sightsId = #{sightsId,jdbcType=BIGINT}
+    </update>
+
+    <update id="addViesNum" parameterType="INTEGER">
+        update sights
+        SET viewsNum=(viewsNum+1)
+        where sightsId = #{sightsId,jdbcType=INTEGER}
+    </update>
+
+    <insert id="addNewSights" parameterType="com.yuntravel.po.Sights">
+        insert into sights (
+        sightsId, sightsName, sightDetail, author, city,cityLocation,headerImg,aboutVideo,article,grade,createDate,viewsNum
+        ) values (
+        #{sightsId,jdbcType=INTEGER},
+        #{sightsName,jdbcType=VARCHAR},
+        #{sightDetail,jdbcType=VARCHAR},
+        #{author,jdbcType=VARCHAR},
+        #{city,jdbcType=VARCHAR},
+        #{cityLocation,jdbcType=VARCHAR},
+        #{headerImg,jdbcType=VARCHAR},
+        #{aboutVideo,jdbcType=VARCHAR},
+        #{article,jdbcType=VARCHAR},
+        #{grade,jdbcType=FLOAT},
+        #{createDate,jdbcType=TIMESTAMP},
+        #{viewsNum,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <select id="getMaxId" resultType="INTEGER">
+        select max(sightsId) from sights
+    </select>
+
+    <select id="getAllBanner" resultType="com.yuntravel.po.Banners">
+        select
+        <include refid="Base_Column_List" />
+        from banners
+    </select>
+
+    <delete id ="dels" parameterType="int[]">
+        delete from banners where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

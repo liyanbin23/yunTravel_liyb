@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuntravel.dao.StrategyCommMapper">
+    <resultMap id="BaseResultMap" type="com.yuntravel.po.StrategyComment">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="strategyId" jdbcType="INTEGER" property="strategyId" />
+        <result column="userId" jdbcType="INTEGER" property="userId" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="createDate" jdbcType="VARCHAR" property="createDate" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, strategyId, userId,content,createDate,status
+  </sql>
+    <select id="getCommListByStrId"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from strategyComment
+        <where>
+            status =0
+            <if test="strategyId!=0">and strategyId = #{strategyId,jdbcType=INTEGER}</if>
+
+        </where>
+    </select>
+
+    <select id="getCommListByKey"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from strategycomment
+        <where>
+            <if test="content!=null">content like "%"#{content,jdbcType=VARCHAR}"%"</if>
+        </where>
+    </select>
+    <select id="getMaxId" resultType="java.lang.Integer">
+        select max(sc.id)
+        from strategycomment sc
+    </select>
+    <select id="getCountNum" resultType="java.lang.Integer">
+        select count(distinct userId) from strategy_like
+        <where>
+            <if test="strategyId!=0">strategyId = #{strategyId,jdbcType=INTEGER}</if>
+        </where>
+    </select>
+
+    <delete id="delByIds" >
+      delete from strategy_like where strategyId= #{strategyId,jdbcType=INTEGER} and userId= #{userId,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="addStrategyComm" parameterType="com.yuntravel.po.StrategyComment" >
+        INSERT INTO strategycomment
+       (id, strategyId, userId,content,createDate,status)
+        VALUES (#{id,jdbcType=INTEGER},
+        #{strategyId,jdbcType=INTEGER},
+        #{userId,jdbcType=INTEGER},
+        #{content,jdbcType=VARCHAR},
+        #{createDate,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER})
+    </insert>
+</mapper>

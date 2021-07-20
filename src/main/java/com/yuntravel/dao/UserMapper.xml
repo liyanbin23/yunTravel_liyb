@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuntravel.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.yuntravel.po.Users">
+        <id column="userId" jdbcType="INTEGER" property="userId" />
+        <result column="userPhone" jdbcType="VARCHAR" property="userPhone" />
+        <result column="nickName" jdbcType="VARCHAR" property="nickName" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="usImage" jdbcType="VARCHAR" property="usImage" />
+        <result column="registDate" jdbcType="TIMESTAMP" property="registDate" />
+        <result column="safeDetail" jdbcType="VARCHAR" property="safeDetail" />
+        <result column="grade" jdbcType="VARCHAR" property="grade" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    userId, userPhone, nickName, password, email,usImage,registDate,safeDetail,grade
+  </sql>
+    <select id="qryAll" parameterType="java.lang.String" resultType="com.yuntravel.po.Users">
+        select
+        <include refid="Base_Column_List" />
+        from users
+    </select>
+    <select id="login" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from users
+        where userPhone = #{userPhone,jdbcType=VARCHAR}
+    </select>
+    <select id="qryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from users
+        where userId = #{userId,jdbcType=INTEGER}
+    </select>
+    <insert id="register" parameterType="com.yuntravel.po.Users">
+        insert into users (
+        userId, userPhone, nickName, password, email,usImage,registDate,safeDetail,grade
+        ) values (
+        #{userId,jdbcType=INTEGER},#{userPhone,jdbcType=VARCHAR},#{nickName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR},#{usImage,jdbcType=VARCHAR},#{registDate,jdbcType=TIMESTAMP},#{safeDetail,jdbcType=VARCHAR},
+        #{grade,jdbcType=VARCHAR}
+        )
+
+
+    </insert>
+    <select id="getMaxId" resultType="INTEGER">
+        select max(userId) from users
+    </select>
+    <select id="qryByPhone" parameterType="java.lang.String" resultType="com.yuntravel.po.Users">
+        select
+        <include refid="Base_Column_List" />
+        from users
+        where userPhone = #{userPhone,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateByUserId" parameterType="com.yuntravel.po.Users">
+        update users
+        <set>
+            <if test="nickName != null and nickName !=''">
+                nickName = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null and password !=''">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null and grade !=''">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="userPhone != null and userPhone !=''">
+                userPhone = #{userPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="safeDetail != null and safeDetail !=''">
+                safeDetail = #{safeDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="usImage != null and usImage !=''">
+                usImage = #{usImage,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null and email !=''">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        where userId = #{userId,jdbcType=BIGINT}
+    </update>
+
+</mapper>

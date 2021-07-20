@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuntravel.dao.NoticeMapper">
+    <resultMap id="BaseResultMap" type="com.yuntravel.po.Notice">
+        <id column="noticeId" jdbcType="INTEGER" property="noticeId" />
+        <result column="noticePath" jdbcType="VARCHAR" property="noticePath" />
+        <result column="noticeTitle" jdbcType="VARCHAR" property="noticeTitle" />
+        <result column="noticeCont" jdbcType="VARCHAR" property="noticeCont" />
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+    </resultMap>
+<!--    基础字段-->
+    <sql id="Base_Column_List">
+    noticeId, noticePath, noticeTitle, noticeCont, createTime,status
+  </sql>
+<!--    获得首页最新公告列表-->
+    <select id="getNoticeList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from notices where 1=1 order by createTime desc LIMIT 7
+    </select>
+<!--    根据公告id获得公告所有信息-->
+    <select id="getNoticeById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from notices where noticeId=#{noticeId,jdbcType=INTEGER}
+    </select>
+    <select id="getAllNotice" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from notices where 1=1 order by createTime desc
+    </select>
+
+
+    <select id="qryAllSightsWithKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sights
+        <where>
+            <if test="city!=null and city!=''">city=#{city,jdbcType=VARCHAR}</if>
+            <if test="sightsName!=null and sightsName!=''">and sightsName=#{sightsName,jdbcType=VARCHAR}</if>
+        </where>
+        order by grade desc
+    </select>
+
+    <select id="qrySightsById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sights where sightsId=#{sightsId,jdbcType=INTEGER}
+    </select>
+
+    <insert id="addNewSights" parameterType="com.yuntravel.po.Sights">
+        insert into sights (
+        sightsId, sightsName, sightDetail, author, city,cityLocation,headerImg,aboutVideo,article,grade,createDate,viewsNum
+        ) values (
+        #{sightsId,jdbcType=INTEGER},
+        #{sightsName,jdbcType=VARCHAR},
+        #{sightDetail,jdbcType=VARCHAR},
+        #{author,jdbcType=VARCHAR},
+        #{city,jdbcType=VARCHAR},
+        #{cityLocation,jdbcType=VARCHAR},
+        #{headerImg,jdbcType=VARCHAR},
+        #{aboutVideo,jdbcType=VARCHAR},
+        #{article,jdbcType=VARCHAR},
+        #{grade,jdbcType=FLOAT},
+        #{createDate,jdbcType=TIMESTAMP},
+        #{viewsNum,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <select id="getMaxId" resultType="INTEGER">
+        select max(sightsId) from sights
+    </select>
+
+    <select id="getAllBanner" resultType="com.yuntravel.po.Banners">
+        select
+        <include refid="Base_Column_List" />
+        from banners
+    </select>
+
+</mapper>

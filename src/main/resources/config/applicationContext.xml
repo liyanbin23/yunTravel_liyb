@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 修改ns名称空间，引入spring的其它配置模块:beans核心工厂，context上下文环境，tx事务管理 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+ ">
+
+     <import resource="classpath:config/spring-dao.xml"/>
+     <import resource="classpath:config/spring-service.xml"/>
+     <import resource="classpath:config/spring-mvc.xml"/>
+
+</beans>

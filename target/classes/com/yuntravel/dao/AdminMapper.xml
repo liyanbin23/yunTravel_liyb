@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuntravel.dao.AdminMapper">
+    <resultMap id="BaseResultMap" type="com.yuntravel.po.Admin">
+        <id column="adminId" jdbcType="INTEGER" property="adminId" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="nickName" jdbcType="VARCHAR" property="nickName" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="usImage" jdbcType="VARCHAR" property="usImage" />
+        <result column="roleNum" jdbcType="INTEGER" property="roleNum" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    adminId, phone, nickName, password, email,usImage,roleNum
+  </sql>
+    <select id="qryAll"  resultType="com.yuntravel.po.Admin">
+        select
+        <include refid="Base_Column_List" />
+        from admins where roleNum=1
+    </select>
+    <select id="login" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from admins
+        where phone = #{phone,jdbcType=VARCHAR}
+    </select>
+    <select id="qryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from admins
+        where adminId = #{adminId,jdbcType=INTEGER}
+    </select>
+    <insert id="register" parameterType="com.yuntravel.po.Admin">
+        insert into admins (
+        adminId, phone, nickName, password, email,usImage,roleNum
+        ) values (
+        #{adminId,jdbcType=INTEGER},#{phone,jdbcType=VARCHAR},#{nickName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR},#{usImage,jdbcType=VARCHAR},#{roleNum,jdbcType=INTEGER}
+        )
+    </insert>
+    <select id="getMaxAdminId" resultType="INTEGER">
+        select max(adminId) from admins
+    </select>
+    <select id="qryByPhone" parameterType="java.lang.String" resultType="com.yuntravel.po.Users">
+        select
+        <include refid="Base_Column_List" />
+        from users
+        where userPhone = #{userPhone,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

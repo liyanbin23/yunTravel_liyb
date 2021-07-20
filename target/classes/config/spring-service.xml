@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 修改ns名称空间，引入spring的其它配置模块:beans核心工厂，context上下文环境，tx事务管理 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  	 http://www.springframework.org/schema/context
+  	 http://www.springframework.org/schema/context/spring-context-4.2.xsd
+ 	">
+
+<!--    扫描service下的报-->
+    <context:component-scan base-package="com.yuntravel.service"/>
+<!--   将所有的业务类，注入到spring，可以通过配置，或注解实现 -->
+<!--    <bean id="userService" class="com.yuntravel.service.impl.UserServiceImpl">-->
+<!--        <property name="UserMapper" ref="userMapper"/>-->
+<!--    </bean>-->
+<!--    &lt;!&ndash;   将所有的业务类，注入到spring，可以通过配置，或注解实现 &ndash;&gt;-->
+<!--    <bean id="userService" class="com.yuntravel.service.impl.BannerServiceImpl">-->
+<!--        <property name="bannersMapper" ref="bannersMapper"/>-->
+<!--    </bean>-->
+<!--    声明事务配置-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+<!--        注入数据源-->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>

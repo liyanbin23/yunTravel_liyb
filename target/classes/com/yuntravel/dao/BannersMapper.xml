@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuntravel.dao.BannersMapper">
+    <resultMap id="BaseResultMap" type="com.yuntravel.po.Banners">
+        <id column="imgId" jdbcType="INTEGER" property="imgId" />
+        <result column="imgDetail" jdbcType="VARCHAR" property="imgDetail" />
+        <result column="imgUrl" jdbcType="VARCHAR" property="imgUrl" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="pathUrl" jdbcType="VARCHAR" property="pathUrl" />
+        <result column="useable" jdbcType="INTEGER" property="useAble" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    imgId, imgDetail, imgUrl, banType, pathUrl,useable
+  </sql>
+    <select id="getHomeBanner" resultMap="BaseResultMap">
+        select imgId, imgDetail, imgUrl, banType, pathUrl,useable
+        from banners where banType='1' and useable=0
+    </select>
+    <select id="getSightBanner" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from banners where banType='2' and useable=0
+    </select>
+
+    <insert id="addBanner" parameterType="com.yuntravel.po.Banners">
+        insert into banners (
+        imgId, imgDetail, imgUrl, banType, pathUrl,useable
+        ) values (
+        #{imgId,jdbcType=INTEGER},#{imgDetail,jdbcType=VARCHAR},#{imgUrl,jdbcType=VARCHAR},#{banType,jdbcType=VARCHAR},
+        #{pathUrl,jdbcType=VARCHAR},#{useAble,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="getMaxId" resultType="INTEGER">
+        select max(imgId) from banners
+    </select>
+    <select id="getAllBanner" resultType="com.yuntravel.po.Banners">
+        select
+        <include refid="Base_Column_List" />
+        from banners where useable!=3
+    </select>
+
+    <update id="delBanner" parameterType="INTEGER">
+        update banners set useable=3
+        <where>
+        <if test="imgId!=null">imgId=#{imgId,jdbcType=INTEGER}</if>
+        </where>
+    </update>
+
+</mapper>

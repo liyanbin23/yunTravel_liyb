@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuntravel.dao.TypesMapper">
+    <resultMap id="BaseResultMap" type="com.yuntravel.po.TravelType">
+        <id column="typeId" jdbcType="INTEGER" property="typeId" />
+        <result column="typeName" jdbcType="VARCHAR" property="typeName" />
+        <result column="startSal" jdbcType="FLOAT" property="startSal" />
+        <result column="endSal" jdbcType="FLOAT" property="endSal" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    typeId, typeName, startSal,endSal
+  </sql>
+    <select id="qryByIds"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from strategy_like
+        <where>
+            <if test="strategyId!=null">strategyId = #{strategyId,jdbcType=INTEGER}</if>
+            <if test="userId!=null">and userId = #{userId,jdbcType=INTEGER}</if>
+        </where>
+    </select>
+
+    <select id="getNameById" resultType="java.lang.String">
+        select typeName from travelType
+        <where>
+            <if test="typeId!=null">typeId = #{typeId,jdbcType=INTEGER}</if>
+        </where>
+    </select>
+
+    <select id="getId" resultType="java.lang.Integer">
+        select typeId from travelType
+        <where>
+            <if test="expen!=null">#{expen,jdbcType=FLOAT} between startSal and endSal</if>
+        </where>
+    </select>
+
+    <delete id="delByIds" >
+      delete from strategy_like where strategyId= #{strategyId,jdbcType=INTEGER} and userId= #{userId,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="addNew" >
+        INSERT INTO strategy_like
+        VALUES ((SELECT (MAX(s.id)+1) id FROM strategy_like s),#{strategyId,jdbcType=INTEGER},#{userId,jdbcType=INTEGER},"0")
+    </insert>
+</mapper>

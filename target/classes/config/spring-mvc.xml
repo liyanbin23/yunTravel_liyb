@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 修改ns名称空间，引入spring的其它配置模块:beans核心工厂，context上下文环境，tx事务管理 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  	  http://www.springframework.org/schema/mvc
+  	   http://www.springframework.org/schema/mvc/spring-mvc.xsd
+      http://www.springframework.org/schema/context
+  	 http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+<!--注解驱动-->
+	<mvc:annotation-driven/>
+<!--静态资源过滤-->
+	<mvc:default-servlet-handler/>
+<!--	扫描包-->
+	<context:component-scan base-package="com.yuntravel.controller"/>
+	<mvc:resources mapping="/static/**" location="/WEB-INF/static/"/>
+
+<!--	视图解析器-->
+<!--	allowed-headers="Origin,X-Mx-ReqToken,x-requested-with,userName,passWord,Authorization,Accept,content-type,Access-Control-Allow-Headers,Access-Control-Allow-Origin"-->
+	<mvc:cors>
+		<mvc:mapping path="/**"
+					 allowed-origins="*"
+					 allowed-methods="POST,GET,OPTIONS,DELETE,PUT"
+					 allowed-headers="*"
+					 allow-credentials="true"/>
+	</mvc:cors>
+	<!-- 视图解析器 -->
+	<bean
+			class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/pages" />
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	<!--start:使用Jackson 2.x的配置，需要导入的jar包：jackson-core-xxx.jar、jackson-annotations-xxx.jar、jackson-databind-xxx.jar -->
+	<!--通过处理器映射DefaultAnnotationHandlerMapping来开启支持@Controller注解 -->
+	<bean
+			class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+	<!--通过处理器适配器AnnotationMethodHandlerAdapter来开启支持@RequestMapping注解 -->
+	<bean
+			class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<!-- 设置返回字符串编码 -->
+				<bean
+						class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=UTF-8</value>
+							<value>application/json;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<!-- json转换器 -->
+				<bean
+						class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=UTF-8</value>
+							<value>application/json;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置文件上传组件 -->
+	<bean id="multipartResolver"
+		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<property name="maxUploadSize" value="104857600"></property>
+	</bean>
+</beans>

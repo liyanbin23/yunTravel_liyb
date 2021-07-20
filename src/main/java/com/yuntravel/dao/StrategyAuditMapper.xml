@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuntravel.dao.StrategyAuditMapper">
+    <resultMap id="BaseResultMap" type="com.yuntravel.po.Strategy">
+        <id column="strategyId" jdbcType="INTEGER" property="strategyId" />
+        <result column="userId" jdbcType="INTEGER" property="userId" />
+        <result column="titles" jdbcType="VARCHAR" property="titles" />
+        <result column="headImg" jdbcType="VARCHAR" property="headImg" />
+        <result column="citys" jdbcType="VARCHAR" property="citys" />
+        <result column="router" jdbcType="VARCHAR" property="router" />
+        <result column="expen" jdbcType="FLOAT" property="expen" />
+        <result column="articleCont" jdbcType="VARCHAR" property="articleCont" />
+        <result column="travelDays" jdbcType="INTEGER" property="travelDays" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="types" jdbcType="INTEGER" property="types" />
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="adminId" jdbcType="INTEGER" property="adminId" />
+        <result column="reason" jdbcType="VARCHAR" property="reason" />
+        <result column="auditTime" jdbcType="TIMESTAMP" property="auditTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    strategyId, userId, titles,headImg, citys, router,expen,articleCont,travelDays,types,status,createTime,adminId,auditTime
+  </sql>
+    <select id="getBaseStrategyList" resultType="com.yuntravel.po.Strategy">
+        select
+        strategyId, userId, titles,headImg, citys, router,expen,articleCont,travelDays,types,status,createTime
+        from strategy_base
+        <where>
+            status=0
+        </where>
+    </select>
+    <select id="getAuditStrategyList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from strategy_audited
+        <where>
+            <if test="strategyId!=null and strategyId!=0">and strategyId=#{strategyId,jdbcType=INTEGER}</if>
+            <if test="adminId!=null and adminId!=0">and adminId=#{adminId,jdbcType=INTEGER}</if>
+        </where>
+    </select>
+    <select id="getUnAuditStrategyList" resultType="com.yuntravel.po.Strategy">
+        select
+        strategyId, userId, titles,headImg, citys, router,expen,articleCont,travelDay,types,status,createTime,adminId,reason,auditTime
+        from strategy_unaudited
+        <where>
+            status=0
+
+            <if test="adminId!=null and adminId!=0">and adminId=#{adminId,jdbcType=INTEGER}</if>
+            <if test="titles!=null">and titles like "%"#{titles,jdbcType=VARCHAR}"%"</if>
+            <if test="auditTime!=null">and auditTime like "%"#{auditTime,jdbcType=TIMESTAMP}"%"</if>
+        </where>
+        order by createTime desc
+    </select>
+
+    <select id="getBaseStrategyById" resultType="com.yuntravel.po.Strategy">
+        select
+        strategyId, userId, titles,headImg, citys, router,expen,articleCont,travelDays,types,status,createTime
+        from strategy_base where strategyId=#{strategyId,jdbcType=INTEGER}
+    </select>
+    <select id="getAuditStrategyById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from strategy_audited where strategyId=#{strategyId,jdbcType=INTEGER}
+    </select>
+    <select id="getUnAuditStrategyById" resultType="com.yuntravel.po.Strategy">
+        select
+        <include refid="Base_Column_List" />
+        from strategy_unaudited where strategyId=#{strategyId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getBaseStrategyListByUserId" resultType="com.yuntravel.po.Strategy">
+        select
+        <include refid="Base_Column_List" />
+        from strategy_base where userId=#{userId,jdbcType=INTEGER}
+    </select>
+    <select id="getAuditStrategyListByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from strategy_audited where userId=#{userId,jdbcType=INTEGER}
+    </select>
+    <select id="getUnAuditStrategyListByUserId" resultType="com.yuntravel.po.Strategy">
+        select
+        <include refid="Base_Column_List" />
+        from strategy_unaudited where userId=#{userId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getBaseMaxStrategyId" resultType="java.lang.Integer">
+        select max(strategyId)
+        from strategy_base
+    </select>
+    <select id="getAuditMaxStrategyId" resultType="java.lang.Integer">
+        select max(strategyId)
+        from strategy_audited
+    </select>
+    <select id="getUnAuditMaxStrategyId" resultType="java.lang.Integer">
+        select max(strategyId)
+        from strategy_unaudited
+    </select>
+
+    <insert id="addBaseStrategy" parameterType="com.yuntravel.po.Strategy">
+        insert into strategy_base (
+         strategyId, userId, titles,headImg, citys, router,expen,articleCont,travelDays,types,status,createTime
+        ) values (
+        #{strategyId,jdbcType=INTEGER},
+        #{userId,jdbcType=INTEGER},
+        #{titles,jdbcType=VARCHAR},
+        #{headImg,jdbcType=VARCHAR},
+        #{citys,jdbcType=VARCHAR},
+        #{router,jdbcType=VARCHAR},
+        #{expen,jdbcType=FLOAT},
+        #{articleCont,jdbcType=VARCHAR},
+        #{travelDays,jdbcType=INTEGER},
+        #{types,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="addAuditStrategy" parameterType="com.yuntravel.po.Strategy">
+        insert into strategy_base (
+         strategyId, userId, titles,headImg, citys, router,expen,articleCont,travelDays,types,status,createTime,adminId,auditTime
+        ) values (
+        #{strategyId,jdbcType=INTEGER},
+        #{userId,jdbcType=INTEGER},
+        #{titles,jdbcType=VARCHAR},
+        #{headImg,jdbcType=VARCHAR},
+        #{citys,jdbcType=VARCHAR},
+        #{router,jdbcType=VARCHAR},
+        #{expen,jdbcType=FLOAT},
+        #{articleCont,jdbcType=VARCHAR},
+        #{travelDays,jdbcType=INTEGER},
+        #{types,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{adminId,jdbcType=INTEGER},
+        #{auditTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="addUnAuditStrategy" parameterType="com.yuntravel.po.Strategy">
+        insert into strategy_base (
+         strategyId, userId, titles,headImg, citys, router,expen,articleCont,travelDays,types,status,createTime,adminId,reason,auditTime
+        ) values (
+        #{strategyId,jdbcType=INTEGER},
+        #{userId,jdbcType=INTEGER},
+        #{titles,jdbcType=VARCHAR},
+        #{headImg,jdbcType=VARCHAR},
+        #{citys,jdbcType=VARCHAR},
+        #{router,jdbcType=VARCHAR},
+        #{expen,jdbcType=FLOAT},
+        #{articleCont,jdbcType=VARCHAR},
+        #{travelDays,jdbcType=INTEGER},
+        #{types,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{adminId,jdbcType=INTEGER},
+        #{reason,jdbcType=VARCHAR},
+        #{auditTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <select id="getMaxId" resultType="INTEGER">
+        select max(imgId) from banners
+    </select>
+    <select id="getAllBanner" resultType="com.yuntravel.po.Banners">
+        select
+        <include refid="Base_Column_List" />
+        from banners
+    </select>
+
+</mapper>
